@@ -9,12 +9,12 @@ import (
 
 type myfloat float64
 
-func (f myfloat) Compare(other Item) bool {
+func (f myfloat) Less(other Item) bool {
 	return f < other.(myfloat)
 }
 
 func TestHeap(t *testing.T) {
-	pq := NewHeap()
+	pq := NewHeap[myfloat]()
 
 	elements := []myfloat{5, 3, 7, 8, 6, 2, 9}
 	for _, e := range elements {
@@ -39,12 +39,12 @@ func TestHeap(t *testing.T) {
 
 type myMaxHeapFloat float64
 
-func (f myMaxHeapFloat) Compare(other Item) bool {
+func (f myMaxHeapFloat) Less(other Item) bool {
 	return f > other.(myMaxHeapFloat)
 }
 
 func TestMaxHeap(t *testing.T) {
-	pq := NewHeap()
+	pq := NewHeap[myMaxHeapFloat]()
 
 	elements := []myMaxHeapFloat{5, 3, 7, 8, 6, 2, 9}
 	for _, e := range elements {
@@ -71,12 +71,12 @@ type mydata struct {
 	rank int
 }
 
-func (m mydata) Compare(o Item) bool {
+func (m mydata) Less(o Item) bool {
 	return m.rank < o.(mydata).rank
 }
 
 func TestHeapLen(t *testing.T) {
-	pq := NewHeap()
+	pq := NewHeap[mydata]()
 	assert.Zero(t, pq.Len(), "empty queue should have length 0")
 
 	mydataSlice := []mydata{{"foo", 1}, {"bar", 3}, {"foobar", 2}}

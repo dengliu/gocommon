@@ -13,7 +13,7 @@ import (
 func main() {
 	fmt.Println("hello")
 
-	hp := heap.NewHeap()
+	hp := heap.NewHeap[myItem]()
 	hp.Insert(myItem{1.2})
 	hp.Insert(myItem{2.3})
 	hp.Insert(myItem{3.3})
@@ -34,7 +34,7 @@ type myItem struct {
 	data string
 }
 
-func (h myItem) Compare(other heap.Item) bool {
+func (h myItem) Less(other heap.Item) bool {
 	return h.data < other.(myItem).data
 }
 
