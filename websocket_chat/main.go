@@ -3,13 +3,10 @@ package main
 import (
 	"embed"
 	"flag"
-	"io/fs"
 	"log"
 	"net/http"
 	"os"
 	"time"
-
-	"github.com/gorilla/websocket"
 )
 
 //go:embed public
@@ -23,22 +20,9 @@ func main() {
 	infoLog := log.New(os.Stdout, "[LOG] ", log.Lshortfile|log.LstdFlags)
 	errorLog := log.New(os.Stderr, "[ERR] ", log.Lshortfile|log.LstdFlags)
 
-	// Makes sure you put folder name correctly and exists
-	fsStatic, err := fs.Sub(staticfiles, "public")
-	if err != nil {
-		errorLog.Fatal(err)
-	}
+	app := NewApplicatoin(infoLog, errorLog, "public")
 
-	app := &Application{
-		Upgrader:   websocket.Upgrader{},
-		Clients:    make(map[*websocket.Conn]string),
-		Broadcast:  make(chan Message),
-		InfoLog:    infoLog,
-		ErrorLog:   errorLog,
-		FileSystem: http.FS(fsStatic),
-	}
-
-	go app.HandleMessages()
+	go app.Run()
 
 	srv := http.Server{
 		Addr:         port,

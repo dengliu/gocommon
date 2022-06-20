@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"log"
 	"net/http"
 
@@ -33,6 +34,24 @@ type Application struct {
 	FileSystem http.FileSystem
 }
 
+func NewApplicatoin(infLog, errLog *log.Logger, filedir string) *Application {
+	// Makes sure you put folder name correctly and exists
+	fsStatic, err := fs.Sub(staticfiles, filedir)
+	if err != nil {
+		errLog.Fatal(err)
+	}
+
+	return &Application{
+		Upgrader:   websocket.Upgrader{},
+		Clients:    make(map[*websocket.Conn]string),
+		Broadcast:  make(chan Message),
+		InfoLog:    infLog,
+		ErrorLog:   errLog,
+		FileSystem: http.FS(fsStatic),
+	}
+
+}
+
 func (app *Application) routes() http.Handler {
 	mux := http.NewServeMux()
 
@@ -48,7 +67,7 @@ func (app *Application) routes() http.Handler {
 	return mux
 }
 
-func (app *Application) HandleMessages() {
+func (app *Application) Run() {
 	for {
 		msg := <-app.Broadcast
 		// app.InfoLog.Printf("msg: %+v\n", msg)
