@@ -3,6 +3,7 @@ module github.com/dengliu/gocommon
 go 1.18
 
 require (
+	github.com/dghubble/trie v0.0.0-20220428154201-8146155f623e
 	github.com/gorilla/websocket v1.5.0
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/labstack/gommon v0.3.1
